@@ -53,7 +53,7 @@ This repository contains the **Auto Driving Car Simulation** program and its acc
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/auto-driving-car-simulation.git
+   git clone https://github.com/nimhyj/CarSimulator.git
    cd auto-driving-car-simulation
    ```
 2. Install dependencies (if required):
