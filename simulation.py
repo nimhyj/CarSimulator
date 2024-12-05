@@ -32,7 +32,7 @@ Command Syntax:
 - Commands: `L` (Turn Left), `R` (Turn Right), `F` (Move Forward)
 
 Dependencies:
-- Python 3.11.1
+- Python 3.11
 
 Example:
 ```bash
@@ -50,6 +50,18 @@ Please choose from the following options:
 import sys
 
 def main():
+    """
+    The main function serves as the entry point for the Auto Driving Car Simulation program.
+    It handles user interactions for setting up the simulation field, adding cars with initial positions
+    and commands, and running the simulation to track the movements and detect collisions.
+
+    Workflow:
+    1. Prompt user to define the simulation field dimensions.
+    2. Allow users to add cars with unique names, initial positions, directions, and movement commands.
+    3. Simulate car movements based on commands while checking for collisions.
+    4. Provide options to restart or exit the simulation after each run.
+    """
+
     while True:
         print("Welcome to Auto Driving Car Simulation!\n")
         try:
@@ -97,6 +109,8 @@ def main():
                         raise ValueError("Direction must be one of N, S, E, W.")
                     if not (0 <= x < width and 0 <= y < height):
                         raise ValueError("Position must be within field boundaries.")
+                    if any(car['x'] == x and car['y'] == y for car in cars):
+                        raise ValueError("Position is already occupied by another car.")
                     break
                 except ValueError as e:
                     print(f"Invalid input: {e}")
@@ -132,6 +146,17 @@ def main():
             collision_logs = []
 
             for step in range(max(len(car['commands']) for car in cars)):
+                """
+                Simulation Loop Logic:
+                - Iterate through each simulation step, processing one command per car.
+                - Commands:
+                  * 'L': Rotate the car 90 degrees counter-clockwise.
+                  * 'R': Rotate the car 90 degrees clockwise.
+                  * 'F': Move the car one unit forward in its current direction.
+                - Detect collisions if two cars occupy the same position after a move.
+                - Remove both cars involved in a collision from the simulation.
+                """
+                
                 for car in cars:
                     if step >= len(car['commands']):
                         continue

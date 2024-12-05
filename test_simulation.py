@@ -17,20 +17,24 @@ Test Scenarios:
    - Validate behavior when car names are empty or inputs are invalid.
 
 2. **Simulating Movements**:
+   - Test adding a second car in the same position as the first car.
+   - Validate behavior when car starting position is invalid.
+
+3. **Simulating Movements**:
    - Test car movements, ensuring they respect field boundaries.
    - Verify correct handling of turning and forward movements.
 
-3. **Collision Detection**:
+4. **Collision Detection**:
    - Simulate scenarios where cars collide and validate detection.
 
-4. **Boundary Constraints**:
+5. **Boundary Constraints**:
    - Validate that cars cannot be initialized outside field boundaries.
 
-5. **Integration**:
+6. **Integration**:
    - Ensure the simulation produces the correct output, including field creation, car initialization, and post-simulation results.
 
 Dependencies:
-- Python 3.11.1
+- Python 3.11
 - `unittest` and `unittest.mock`
 
 Usage:
@@ -47,6 +51,7 @@ Example Test:
 import unittest
 from unittest.mock import patch
 from io import StringIO
+from simulation import main
 
 class TestAutoDrivingCarSimulation(unittest.TestCase):
 
@@ -55,7 +60,7 @@ class TestAutoDrivingCarSimulation(unittest.TestCase):
     
     def test_add_car_and_simulation(self, mock_stdout, mock_input):
         """Test adding a car and running the simulation."""
-        from simulation import main
+        
         with self.assertRaises(SystemExit):  # Simulation ends with a system exit
             main()
 
@@ -67,12 +72,26 @@ class TestAutoDrivingCarSimulation(unittest.TestCase):
         self.assertIn("After simulation, the result is:", output)
         self.assertIn("CarA, (2,4) N", output)
 
+    @patch('builtins.input', side_effect=['10 10', '1', 'Car1', '2 3 N', 'LRF', '1', 'Car2', '2 3 N', '1 1 E', 'LRF', '2', '2'])
+    @patch('sys.stdout', new_callable=StringIO)
+    
+    def test_add_second_car_in_same_position(self, mock_stdout, mock_input):
+        """Test that adding a second car in the same position as the first car is rejected."""
+
+        with self.assertRaises(SystemExit):
+            main()  # Run the main function to simulate user interaction
+
+        output = mock_stdout.getvalue()
+        
+        # Check for the specific rejection message
+        self.assertIn("Invalid input: Position is already occupied by another car.", output)
+
     @patch('builtins.input', side_effect=['5 5', '1', 'CarB', '0 0 E', 'FFFFF', '2', '2'])
     @patch('sys.stdout', new_callable=StringIO)
     
     def test_car_moving_out_of_bounds(self, mock_stdout, mock_input):
         """Test that the car stops when moving out of bounds."""
-        from simulation import main
+        
         with self.assertRaises(SystemExit):  # Simulation ends with a system exit
             main()
 
@@ -84,7 +103,7 @@ class TestAutoDrivingCarSimulation(unittest.TestCase):
     
     def test_collision_detection(self, mock_stdout, mock_input):
         """Test collision detection between two cars."""
-        from simulation import main
+        
         with self.assertRaises(SystemExit):  # Simulation ends with a system exit
             main()
 
@@ -96,7 +115,7 @@ class TestAutoDrivingCarSimulation(unittest.TestCase):
     
     def test_invalid_initial_position(self, mock_stdout, mock_input):
         """Test that car cannot be initialized outside the boundaries."""
-        from simulation import main
+        
         with self.assertRaises(SystemExit):
             main()
 
@@ -108,7 +127,7 @@ class TestAutoDrivingCarSimulation(unittest.TestCase):
     
     def test_turning_and_forward_movement(self, mock_stdout, mock_input):
         """Test car turning and forward movement."""
-        from simulation import main
+        
         with self.assertRaises(SystemExit):
             main()
 
